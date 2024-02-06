@@ -7,3 +7,6 @@ pluginManagement {
 }
 
 rootProject.name = 'JoglDemo'
+
+include 'FxJoglApp'
+include 'FxJoglMod'
