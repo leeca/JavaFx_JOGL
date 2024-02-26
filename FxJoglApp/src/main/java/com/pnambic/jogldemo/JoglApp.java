@@ -2,10 +2,15 @@ package com.pnambic.jogldemo;
 
 import com.pnambic.joglmodule.JoglModule;
 
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class JoglApp extends Application {
@@ -21,9 +26,19 @@ public class JoglApp extends Application {
     stage.show();
 
     jogl = new JoglModule();
-    group.getChildren().add(jogl.prepareCanvas());
+    group.getChildren().add(asVBox());
     jogl.demoDisplay();
     jogl.start();
+  }
+
+  private Node asVBox() {
+    VBox result = new VBox();
+    result.getChildren().add(new Label("Top"));
+    result.getChildren().add(new Label("Middle"));
+    Canvas canvas = jogl.prepareCanvas();
+    // result.getChildren().add(canvas);
+    result.getChildren().add(new Label("Bottom"));
+    return result;
   }
 
   @Override
