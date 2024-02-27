@@ -36,8 +36,6 @@ public class JoglModule {
     glWindow = GLWindow.create(screen, caps);
 
     final NewtCanvasJFX result = new NewtCanvasJFX(glWindow);
-    result.setWidth(800);
-    result.setHeight(600);
     return result;
   }
 
