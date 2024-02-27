@@ -53,8 +53,8 @@ public class JoglApp extends Application {
 
     VBox joglVBox = new VBox();
     // Outside of Tab pane
-    // Canvas canvas = jogl.prepareCanvas();
-    // fillVbox(simpleVBox, canvas);
+    Canvas canvas = jogl.prepareCanvas();
+    fillVbox(simpleVBox, canvas);
 
     Tab joglTab = new Tab("VBox with JOGL", joglVBox);
     addHandlers(joglTab, joglVBox);
@@ -93,8 +93,8 @@ public class JoglApp extends Application {
 
   private void startJogl(VBox joglVBox) {
     // Inside of Tab pane
-    Canvas canvas = jogl.prepareCanvas();
-    fillVbox(joglVBox, canvas);
+    // Canvas canvas = jogl.prepareCanvas();
+    // fillVbox(joglVBox, canvas);
 
     jogl.demoDisplay();
     jogl.start();
