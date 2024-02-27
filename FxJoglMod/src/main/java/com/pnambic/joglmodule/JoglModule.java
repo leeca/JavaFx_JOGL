@@ -1,5 +1,6 @@
 package com.pnambic.joglmodule;
 
+import com.jogamp.newt.Display;
 import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.Screen;
 import com.jogamp.newt.javafx.NewtCanvasJFX;
@@ -19,28 +20,36 @@ import javafx.scene.canvas.Canvas;
 
 public class JoglModule {
 
+  private Display jfxNewtDisplay =
+      NewtFactory.createDisplay(null, false);
+
   private Animator animator;
 
   private GLWindow glWindow;
 
-  /**
-   * Create the GLWindow and add it to the JavaFx Group.
-   */
-  public Canvas prepareCanvas() {
-    com.jogamp.newt.Display jfxNewtDisplay =
+  private Screen screen;
+
+  public void initModule() {
+    jfxNewtDisplay =
         NewtFactory.createDisplay(null, false);
-    final Screen screen = NewtFactory.createScreen(jfxNewtDisplay, 0);
+    screen = NewtFactory.createScreen(jfxNewtDisplay, 0);
     final GLCapabilities caps =
         new GLCapabilities(GLProfile.getMaxFixedFunc(true));
 
     glWindow = GLWindow.create(screen, caps);
+  }
 
+  public Canvas prepareCanvas() {
     final NewtCanvasJFX result = new NewtCanvasJFX(glWindow);
+    result.setWidth(150);
+    result.setHeight(150);
     return result;
   }
 
   public void start() {
-    animator = new Animator(glWindow);
+    if (animator == null) {
+      animator = new Animator(glWindow);
+    }
     animator.start();
   }
 
@@ -51,10 +60,10 @@ public class JoglModule {
   }
 
   public void demoDisplay() {
-    glWindow.addGLEventListener(new BasicOglListener());
+    glWindow.addGLEventListener(new RenderListener());
   }
 
-  private static class BasicOglListener implements GLEventListener {
+  private static class RenderListener implements GLEventListener {
 
     private float rotateT = 0.0f;
 
