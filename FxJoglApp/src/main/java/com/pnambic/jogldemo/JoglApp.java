@@ -2,18 +2,21 @@ package com.pnambic.jogldemo;
 
 import com.pnambic.joglmodule.JoglModule;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -25,7 +28,6 @@ public class JoglApp extends Application {
   public void start(Stage stage) {
     Platform.setImplicitExit(true);
     jogl = new JoglModule();
-    // 1) early jogl.initModule();
     jogl.initModule();
 
     TabPane clientTest = buildTabs();
@@ -53,12 +55,17 @@ public class JoglApp extends Application {
 
     VBox joglVBox = new VBox();
     // Outside of Tab pane
-    Canvas canvas = jogl.prepareCanvas();
-    fillVbox(simpleVBox, canvas);
+    // Canvas canvas = jogl.prepareCanvas();
+    // fillVbox(simpleVBox, canvas);
 
     Tab joglTab = new Tab("VBox with JOGL", joglVBox);
-    addHandlers(joglTab, joglVBox);
+    addHandlers(joglTab, joglVBox, () -> jogl.prepareCanvas());
     result.getTabs().add(joglTab);
+
+    Tab sceneTab = new Tab("Scene Wrapper", joglVBox);
+    addHandlers(joglTab, joglVBox,
+        () -> new SubScene(new StackPane(jogl.prepareCanvas()), 160.0d, 160.0d));
+    result.getTabs().add(sceneTab);
     return result ;
   }
 
@@ -68,14 +75,14 @@ public class JoglApp extends Application {
     dst.getChildren().add(new Label("Bottom"));
   }
 
-  private void addHandlers(Tab joglTab, VBox vBox) {
+  private void addHandlers(Tab joglTab, VBox vBox, Supplier<Node> middleSrc) {
 
     joglTab.setOnSelectionChanged(new EventHandler<Event>() {
 
       @Override
       public void handle(Event event) {
         if (joglTab.isSelected()) {
-          startJogl(vBox);
+          startJogl(vBox, middleSrc);
         } else {
           stopJogl(vBox);
         }
@@ -91,10 +98,10 @@ public class JoglApp extends Application {
     });
   }
 
-  private void startJogl(VBox joglVBox) {
+  private void startJogl(VBox joglVBox, Supplier<Node> middleSrc) {
     // Inside of Tab pane
     // Canvas canvas = jogl.prepareCanvas();
-    // fillVbox(joglVBox, canvas);
+    fillVbox(joglVBox, middleSrc.get());
 
     jogl.demoDisplay();
     jogl.start();
